@@ -6,7 +6,7 @@ This is a archive for resources, tips, associated binaries and other stuffs rela
 
 ## Tools
 
-The ones I mostly use mostly include the followings:-
+The ones I mostly use include the followings:-
 
 #### `radare2`
 
