@@ -2,4 +2,4 @@
 
 # 32bit Binary
 
-This technique is used if the binary has non-executable stack, using 
+ is used if the binary has non-executable stack, using This technique

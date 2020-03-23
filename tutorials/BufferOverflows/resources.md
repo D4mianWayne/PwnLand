@@ -19,7 +19,7 @@ These are the resources I have found while learning about the binary exploitatio
 
 * <http://pwnable.kr/>
 * <http://pwnable.tw/>
-* <http://pwn.eonew.cn/user/login.php>
+* <http://pwn.eonew.cn>
 * <https://www.root-me.org/?lang=en>
 * <http://smashthestack.org/>
 * <https://exploit.education/>
