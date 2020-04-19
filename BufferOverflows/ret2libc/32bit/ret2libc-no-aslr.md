@@ -26,6 +26,8 @@ In `ret2libc` technique, our payload looks like:-
 ```
 Where `N` being the number of arguments a function takes.
 
+# Practical Experience
+
 Now, let's take a binary and see how to use `ret2libc`:-
 
 ```C
@@ -76,6 +78,8 @@ d4mianwayne@oracle:/tmp/train$ cat /proc/sys/kernel/randomize_va_space
 0
 ```
 
+### Finding Offset to `EIP`
+
 Now, everything is good, let's check the offset for EIP:-
 
 ```r
@@ -123,6 +127,7 @@ gef➤  pattern search 0x6261616b
 [+] Searching '0x6261616b'
 [+] Found at offset 140 (little-endian search) likely
 ```
+### Finding Address of `system` and `/bin/sh`
 
 The offset for `EIP` Is 140. Now, let's see how our payload is going to be, since we basically want to do `system("/bin/sh")`, all we have to do is get the address of `system` and `/bin/sh`. 
 
@@ -150,6 +155,8 @@ $2 = {int (const char *)} 0xf7e12200 <__libc_system>
 gef➤  
 ```
 
+
+### Pwning Time
 
 Payload would be:-
 
