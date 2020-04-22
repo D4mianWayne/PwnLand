@@ -236,7 +236,7 @@ Then continuing the exploit script, in `gdb` we can see:-
 
 ### Leaking `GOT` Address
 
-Since there is no `puts`, we have to use `write` to leak a GOT address. since this binary has `write`, `write` it takes 3 arguments, we need a gadget in order to push those arguments to stack and eventually, they'll get passed to the `write` function.
+Since there is no `puts`, we have to use `write` to leak a GOT address. since this binary has `write`, `write` it takes 3 arguments, giving it into the ROP chain would segfault so we need a gadget in order to push those arguments to stack and eventually, they'll get passed to the `write` function.
 
 ```r
 -------------------------------------------------------------------------------------------------------
@@ -396,9 +396,7 @@ Like I said earlier to get the libc address we need to subtract the leaked addre
 
 Now, we have the libc base address, all we need to do is calculate the address of system.
 
-```python
-
-` it exactly same as we did in `ret2libc` no `ASLR`:-
+Second payload would be:-
 
 ```r
 ------------------------------------------------------

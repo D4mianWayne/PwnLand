@@ -1,11 +1,11 @@
-# ROP or Return Oriented Programming
+# Return Oriented Programming
 
 
-ROP is a technique used to bypass the non-exeutable stack while using the available gadgets from the associated binaries i.e. opcodes ending with `ret`. See "tools". 
+ROP is a technique used to bypass the non-executable stack while using the available gadgets from the associated binaries i.e. opcodes ending with `ret`. See "tools". 
 
-# ROP 32bit
+> `split` - 64bit binary from ROP Emporium is used to demonstrate the ROP technqiue.
 
-Let's take the binary `split` from ROP-Emporium and pwn it:-
+First off, we need to check the protections enabled on binary.
 
 ```r
 robin@oracle:~/ROP-Emporium$ gdb-gef -q split
@@ -23,7 +23,7 @@ RelRO                         : Partial
 gef➤  
 ```
 
-It has `NX` enabled so we will use Return Oriented Programming technique to get a shell. Let's reverse engineer it first:-
+It has `NX` enabled which means we ca't use shellcode, we will use Return Oriented Programming technique to get a shell. Let's reverse engineer it first:-
 
 Using `radare2` first:-
 
