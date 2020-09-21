@@ -1,11 +1,10 @@
 ---
 layout:     post
-title:      "Hacktivitycon - Pwn challenges"
+title:      "DownUnderCTF - Pwn challenges"
 subtitle:   "Write-Up"
-date:       2020-08-01 
+date:       2020-09-20 
 author:     "D4mianwayne"
-img:       "/img/banner/hacktivity.png"
-tag:      pwn, roppy, ret2dlresolve
+tag:      pwn, roppy, seccomp. ret2libc
 category: CTF writeup
 ---
 
