@@ -19,7 +19,7 @@ This challenge is for practicing the double free in tcache, since there's not mu
 
 `seccomp-tools`:-
 
-![](/img/seccomp.png)
+![](img/seccomp.png)
 
 # Vulnerability
 
@@ -147,7 +147,7 @@ delete(0)
 
 At this time, when we see the chunk having it `fd` populated with the address same as of chunk 1.
 
-![](/img/double_free.png)
+![](img/double_free.png)
 
 We use the Use After Free to get the heap address, since chunk 1 `fd` points to the chunk itself, `show(0)` will print it's content, printing the heap address.
 
@@ -188,7 +188,7 @@ Since the chunk 4th is basically the freed'd chunk, we overwrite it with the `rw
 ```py
 edit(4, p64(0x0000000066660000))
 ```
-![](/img/rwx.png)
+![](img/rwx.png)
 
 Now, since because of seccomp sandbox, we have to do `open/read/write` shellcode to read falag, we create a shellcode:-
 
@@ -216,7 +216,7 @@ shellcode = asm("""
 
 ```
 
-![](/img/shellcode.png)
+![](img/shellcode.png)
 
 Now, we create a chunk which will just give the `rwx` pointer, then we edit that allocated chunk with the shellcode:-
 
@@ -233,7 +233,7 @@ create(0x100)
 edit(6, p64(0x0000000066660000))
 ```
 
-![](/img/malloc_hook.png)
+![](img/malloc_hook.png)
 
 Now, we just do try to call `malloc` and we get the flag.
 
@@ -242,4 +242,4 @@ create(0x40)
 p.interactive()
 ```
 
-![](/img/flag.png)
+![](img/flag.png)
