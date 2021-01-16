@@ -1,0 +1,83 @@
+diff --git a/src/builtins/builtins-array.cc b/src/builtins/builtins-array.cc
+index 3c2fe33c5b4b330c509d2926bc1e30daa1e09dba..99f0271e035220cd7228e8f9d8959e3b248a6cb5 100644
+--- a/src/builtins/builtins-array.cc
++++ b/src/builtins/builtins-array.cc
+@@ -297,6 +297,34 @@ BUILTIN(ArrayPrototypeFill) {
+   return GenericArrayFill(isolate, receiver, value, start_index, end_index);
+ }
+ 
++BUILTIN(ArrayGetLastElement)
++{
++	Handle<JSReceiver> receiver;
++	ASSIGN_RETURN_FAILURE_ON_EXCEPTION(isolate, receiver, Object::ToObject(isolate, args.receiver()));
++	Handle<JSArray> array = Handle<JSArray>::cast(receiver);
++	uint32_t len = static_cast<uint32_t>(array->length().Number());
++	FixedDoubleArray elements = FixedDoubleArray::cast(array->elements());
++	return *(isolate->factory()->NewNumber(elements.get_scalar(len)));
++}
++
++BUILTIN(ArraySetLastElement)
++{
++	Handle<JSReceiver> receiver;
++	ASSIGN_RETURN_FAILURE_ON_EXCEPTION(isolate, receiver, Object::ToObject(isolate, args.receiver()));
++	int arg_count = args.length();
++	if (arg_count != 2) // first value is always this
++	{
++		return ReadOnlyRoots(isolate).undefined_value();
++	}
++	Handle<JSArray> array = Handle<JSArray>::cast(receiver);
++	uint32_t len = static_cast<uint32_t>(array->length().Number());
++	Handle<Object> value;
++	ASSIGN_RETURN_FAILURE_ON_EXCEPTION(isolate, value, Object::ToNumber(isolate, args.atOrUndefined(isolate,1)));
++	FixedDoubleArray elements = FixedDoubleArray::cast(array->elements());
++	elements.set(len,value->Number());
++	return ReadOnlyRoots(isolate).undefined_value();
++}
++
+ namespace {
+ V8_WARN_UNUSED_RESULT Object GenericArrayPush(Isolate* isolate,
+                                               BuiltinArguments* args) {
+diff --git a/src/builtins/builtins-definitions.h b/src/builtins/builtins-definitions.h
+index 92a430aa2c0cbc3d65fdf2f1f4f295824379dbd8..02982b1c858eb313befcb8ad9e396dcdfbf2f9ab 100644
+--- a/src/builtins/builtins-definitions.h
++++ b/src/builtins/builtins-definitions.h
+@@ -319,6 +319,8 @@ namespace internal {
+   TFJ(ArrayPrototypePop, kDontAdaptArgumentsSentinel)                          \
+   /* ES6 #sec-array.prototype.push */                                          \
+   CPP(ArrayPush)                                                               \
++  CPP(ArrayGetLastElement)                                                     \
++  CPP(ArraySetLastElement)                                                     \
+   TFJ(ArrayPrototypePush, kDontAdaptArgumentsSentinel)                         \
+   /* ES6 #sec-array.prototype.shift */                                         \
+   CPP(ArrayShift)                                                              \
+diff --git a/src/compiler/typer.cc b/src/compiler/typer.cc
+index 6d53531f1cbf9b6669c6b98ea8779e8133babe8d..5db31e9b733cdaa1dd2049b72b7fb6392ea4a1ab 100644
+--- a/src/compiler/typer.cc
++++ b/src/compiler/typer.cc
+@@ -1706,6 +1706,11 @@ Type Typer::Visitor::JSCallTyper(Type fun, Typer* t) {
+     // Array functions.
+     case Builtins::kArrayIsArray:
+       return Type::Boolean();
++    case Builtins::kArrayGetLastElement:
++      return Type::Receiver();
++    case Builtins::kArraySetLastElement:
++      return Type::Receiver();
++
+     case Builtins::kArrayConcat:
+       return Type::Receiver();
+     case Builtins::kArrayEvery:
+diff --git a/src/init/bootstrapper.cc b/src/init/bootstrapper.cc
+index 7fd1e40f661461fdbcf9228c5ce9127c3428dc7b..3a9b97e4b6426e101ca0cdc97ce1cc92aa689968 100644
+--- a/src/init/bootstrapper.cc
++++ b/src/init/bootstrapper.cc
+@@ -1660,6 +1660,10 @@ void Genesis::InitializeGlobal(Handle<JSGlobalObject> global_object,
+                           Builtins::kArrayPrototypeLastIndexOf, 1, false);
+     SimpleInstallFunction(isolate_, proto, "pop", Builtins::kArrayPrototypePop,
+                           0, false);
++    SimpleInstallFunction(isolate_, proto, "GetLastElement", Builtins::kArrayGetLastElement,
++                          0, false);
++    SimpleInstallFunction(isolate_, proto, "SetLastElement", Builtins::kArraySetLastElement,
++                          0, false);
+     SimpleInstallFunction(isolate_, proto, "push",
+                           Builtins::kArrayPrototypePush, 1, false);
+     SimpleInstallFunction(isolate_, proto, "reverse",
