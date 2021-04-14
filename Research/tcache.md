@@ -221,3 +221,69 @@ The functionality of the above can be defined as:-
 * Stashes chunk into the tcache.
 
 ***
+
+# Applicable Techniques of Tcache attack
+
+* Tcache Poisoning
+* Tcache Stashing Unlink
+* Tcache House of Spirit
+* Tcache dup
+
+
+### Tcache Dup Mitigation
+
+In the GLIBC-2.27ubuntu1.4, the double free mitigation towards the tcache chunks were introduced, the `tcache` structure became like:-
+
+```C
+tcache_put (mchunkptr chunk, size_t tc_idx)
+{
+  tcache_entry *e = (tcache_entry *) chunk2mem (chunk);
+  assert (tc_idx < TCACHE_MAX_BINS);
+  /* Mark this chunk as "in the tcache" so the test in _int_free will
+     detect a double free.  */
+  e->key = tcache;
+  e->next = tcache->entries[tc_idx];
+  tcache->entries[tc_idx] = e;
+  ++(tcache->counts[tc_idx]);
+}
+```
+
+Reference: <https://code.woboq.org/userspace/glibc/malloc/malloc.c.html#tcache_perthread_struct>
+
+In the `tcache_put` which is used to put the `free`'d chunks into the tcache bins, added a `key` member in the `tcache_entry` struct solely for the purpose of detecting the double free of the `tcache` chunks, when a chunk is `free`'d, `key` is initialized to the value of the `tcache`.
+
+```C
+#if USE_TCACHE
+  {
+    size_t tc_idx = csize2tidx (size);
+    if (tcache != NULL && tc_idx < mp_.tcache_bins)
+      {
+        /* Check to see if it's already in the tcache.  */
+        tcache_entry *e = (tcache_entry *) chunk2mem (p);
+        /* This test succeeds on double free.  However, we don't 100%
+           trust it (it also matches random payload data at a 1 in
+           2^<size_t> chance), so verify it's not an unlikely
+           coincidence before aborting.  */
+        if (__glibc_unlikely (e->key == tcache))
+          {
+            tcache_entry *tmp;
+            LIBC_PROBE (memory_tcache_double_free, 2, e, tc_idx);
+            for (tmp = tcache->entries[tc_idx];
+                 tmp;
+                 tmp = tmp->next)
+              if (tmp == e)
+                malloc_printerr ("free(): double free detected in tcache 2");
+            /* If we get here, it was a coincidence.  We've wasted a
+               few cycles, but don't abort.  */
+          }
+        if (tcache->counts[tc_idx] < mp_.tcache_count)
+          {
+            tcache_put (p, tc_idx);
+            return;
+          }
+      }
+  }
+#endif
+```
+
+In this, the `key` is checked whether it is equal to the `tcache`, then it is compared with the linked list of the `tcache` itself, the `key` will only be initialized once after the chunk is `free`'d and will be assigned to the `NULL` afterwards the chunk is requested again. So, if the `key` is as same as the `tcache`, then it traverse over the `tcache-entries` and compare the already `free`'d chunks with the one we `free`'d, if encountered it'll print the `free(): double free detected in tcache 2`.
