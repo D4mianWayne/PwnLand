@@ -108,6 +108,17 @@ Navigate to [Kernel/](./Kernel/) to explore:
 - [HEVD Buffer Overflow](./Kernel/HEVD/HEVD_IOCTL_BUFFER_OVERFLOW_STACK.md)
 - [OTAu-lab10c Challenge](./Kernel/OTAu-lab10c/README.md)
 
+#### Kernel Exploitation Primer Series
+
+This section was contributed by [Nikhil](https://github.com/ghostbyt3). The following blog posts are beginner-friendly and offer in-depth guidance for those starting out with Windows kernel exploitation on modern systems.
+
+- [Kernel Exploitation Primer 0x0 - Windows Driver 101](https://ghostbyt3.github.io/blog/Kernel_Exploitation_Primer_0x0)
+- [Kernel Exploitation Primer 0x1 - Setup & Reversing](https://ghostbyt3.github.io/blog/Kernel_Exploitation_Primer_0x1)
+- [Kernel Exploitation Primer 0x2 - SMEP & kASLR & VBS](https://ghostbyt3.github.io/blog/Kernel_Exploitation_Primer_0x2)
+- [Kernel Exploitation Primer 0x3 - VBS & HVCI](https://ghostbyt3.github.io/blog/Kernel_Exploitation_Primer_0x3)
+- [Kernel Exploitation Primer 0x4 - Type Confusion & Use-After-Free Vulnerabilities](https://ghostbyt3.github.io/blog/Kernel_Exploitation_Primer_0x4)
+- [Kernel Exploitation Primer 0x5 - Arbitrary Write (Write-What-Where)](https://ghostbyt3.github.io/blog/Kernel_Exploitation_Primer_0x5)
+
 ## CTF Writeups
 
 Explore solutions from various CTF competitions:
