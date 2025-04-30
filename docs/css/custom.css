@@ -1,6 +1,0 @@
-/* Make code blocks look like terminals */
-.highlight {
-    border-radius: 4px;
-    background: #1e1e1e !important;
-    border-left: 3px solid #ff4081;
-}
