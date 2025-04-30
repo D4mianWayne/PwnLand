@@ -29,6 +29,7 @@ Whether you're a beginner or an experienced security researcher, PwnLand provide
   - [Format String](#format-string)
   - [Heap Exploitation](#heap-exploitation)
   - [Kernel Exploitation](#kernel-exploitation)
+    - [Kernel Exploitation Primer Series](#kernel-exploitation-primer-series)
 - [CTF Writeups](#ctf-writeups)
 - [Research Materials](#research-materials)
 - [Assembly Resources](#assembly-resources)
